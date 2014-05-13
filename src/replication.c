@@ -692,6 +692,26 @@ void updateSlavesWaitingBgsave(int bgsaveerr) {
 
 /* ----------------------------------- SLAVE -------------------------------- */
 
+void shardrangeCommand(redisClient *c) {
+    long long start, end;
+
+    if (c->argc == 3) {
+        robj* sobj = c->argv[1];
+        robj* eobj = c->argv[2];
+
+        getLongLongFromObject(sobj, &start);
+        getLongLongFromObject(eobj, &end);
+
+        server.shard_range_start = (int)start;
+        server.shard_range_end = (int)end;
+    } else {
+        start = server.shard_range_start;
+        end = server.shard_range_end;
+    }
+  
+    addReplySds(c, sdscatprintf(sdsempty(), "+OK Shard Range [%lld, %lld]\r\n", start, end));
+}
+
 /* Abort the async download of the bulk dataset while SYNC-ing with master */
 void replicationAbortSyncTransfer(void) {
     redisAssert(server.repl_state == REDIS_REPL_TRANSFER);

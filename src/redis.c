@@ -267,7 +267,8 @@ struct redisCommand redisCommandTable[] = {
     {"pfadd",pfaddCommand,-2,"wm",0,NULL,1,1,1,0,0},
     {"pfcount",pfcountCommand,-2,"w",0,NULL,1,1,1,0,0},
     {"pfmerge",pfmergeCommand,-2,"wm",0,NULL,1,-1,1,0,0},
-    {"pfdebug",pfdebugCommand,-3,"w",0,NULL,0,0,0,0,0}
+    {"pfdebug",pfdebugCommand,-3,"w",0,NULL,0,0,0,0,0},
+    {"shardrange",shardrangeCommand,-1,"m",0,NULL,0,0,0,0,0},
 };
 
 /*============================ Utility functions ============================ */
@@ -1612,6 +1613,8 @@ void initServer() {
     server.slaveseldb = -1; /* Force to emit the first SELECT command. */
     server.unblocked_clients = listCreate();
     server.ready_keys = listCreate();
+    server.shard_range_start = -1;
+    server.shard_range_end = -1;
 
     createSharedObjects();
     adjustOpenFilesLimit();
